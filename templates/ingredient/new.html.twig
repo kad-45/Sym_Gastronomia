@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Symgastronomia - Créer un ingrédient{% endblock %}
+
+{% block body %}
+    <div class="container w-50">
+        <h1 class="my-4">Création d'un Ingrédient</h1>
+
+        {{ form_start(form) }}
+
+            <div class="row">
+                <div class="col">
+                    {{ form_label(form.name) }}
+                    {{ form_widget(form.name) }}
+                </div>
+                <div class="form-error">
+                    {{ form_errors(form.name) }}
+                </div>
+                <div class="col">
+                    {{ form_label(form.price) }}
+                    {{ form_widget(form.price) }}
+                </div>
+                <div class="form-error">
+                    {{ form_errors(form.price) }}
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-primary mt-4">Créer un ingrédient</button>
+                </div>
+            </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

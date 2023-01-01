@@ -1,0 +1,26 @@
+
+/*-----Le modal pour supprimer les ingrédients et les étapes------*/
+.modal_ingredient_delete {
+    display: none;
+    position: fixed;
+    z-index: 99;
+    left: 25%;
+    top: 5rem;
+    width: 40%;
+    height: 45%;
+    overflow: auto;
+    background-color:  #a3a8b2;
+}
+
+.container_modal_delete {
+    text-align: center;
+    height: 150px;
+}
+
+.container_modal_delete > h3 {
+    margin-top: 1rem;
+}
+
+.container_modal_delete > h2 {
+    margin-top: 2rem;
+}

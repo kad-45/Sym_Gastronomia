@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Symgastronomia - Mes ingrédients{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Mes Ingrédients</h1>
+        {% if ingredients.getTotalItemCount != 0 %}
+            <div class="d-flex justify-content-end">
+                 <a href="{{ path('app_new') }}" class="btn btn-primary ">Créer un ingrédient</a>
+            </div>
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success mt-4">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        <div class="count mt-2">
+           <h5>Le nombre totale des ingrédients est :  {{ ingredients.getTotalItemCount }}</h5>
+        </div>
+
+        <table class="table table-hover">
+            <thead>
+            <tr class="table-light">
+                <th scope="col">Numéro</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Prix</th>
+                <th scope="col">Date de création</th>
+                <th scope="col">Date de mis à jour</th>
+                <th scope="col">Edition</th>
+                <th scope="col">Suppression</th>
+            </tr>
+            </thead>
+            <tbody>
+                {% for ingredient in ingredients %}
+                <tr class="table-primary">
+                    <th scope="row">{{ ingredient.id }}</th>
+                    <td>{{ ingredient.name }}</td>
+                    <td>{{ ingredient.price }}</td>
+                    <td>{{ ingredient.createdAt|date('d/m/Y H:s:i') }}</td>
+                    <td>{{ ingredient.updatedAt|date('d/m/Y H:s:i') }}</td>
+                    <th><a href="{{ path('app_update', { id: ingredient.id }) }}" class="btn btn-info">Modifier</a></th>
+                    <th><a href="{{ path('app_delete', { id: ingredient.id }) }}" class="btn btn-danger ingredient_deleted" type="button" id="myBtn" model="ingredient">Supprimer</a></th>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="navigation d-flex justify-content-center mt-4 bg-warning">
+            <h4>Il n'y a pas d'ingrédients</h4>
+        </div>
+
+        {% endif %}
+        <div class="navigation d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(ingredients) }}
+        </div>
+    </div>
+    <!-----------------------Modal pour supprimer un ingrédient--------------------->
+    {% for ingredient in ingredients %}
+    <div id="myModal" class="modal_ingredient_delete">
+        <span class="close_modal_ingredient_delete">&times;</span>
+        <form method="POST" class="modal_content" enctype="multipart/form-data">
+            <div class="container_modal_delete">
+                <h3>Supprimer un ingrédient</h3>
+                <h5 class="mt-4">Etes vous sûr de supprimer cet ingrédient ?</h5>
+                <div class="footer_ingredient_delete mt-4">
+                    <input type="hidden" id="id_ingredient" name="ingredient_id" value="{{ ingredient.id }}">
+                    <input type="hidden" id="ingredient_delete_id" name="id" value="">
+                    <button type="button" class="btn btn_cancel btn-secondary"> Fermer</button>
+                    <button type="submit" class="btn btn_delete btn-danger"><a href="{{ path('app_delete', { id: ingredient.id }) }}" class="text-decoration-none text-white">Supprimer</a></button>
+                </div>
+            </div>
+        </form>
+    </div>
+    {% endfor %}
+
+
+
+{% endblock %}
