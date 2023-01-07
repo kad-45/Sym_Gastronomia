@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Symgastronomia - Mes Recettes{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Mes recettes <sup class="text-primary">{{ recipes.getTotalItemCount }}</sup></h1>
+
+        {% if recipes.getTotalItemCount != 0 %}
+        <div class="d-flex justify-content-end mt-4">
+            <a href="{{ path('app_new_recipe') }}" class="btn btn-dark ">Créer une recette</a>
+        </div>
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success mt-4">
+                {{ message }}
+            </div>
+        {% endfor %}
+        <div class="count mt-2">
+            <h5>Le nombre totale des recettes est :  {{ recipes.getTotalItemCount }} </h5>
+        </div>
+        <div class="d-flex flex-wrap mt-4">
+
+            {% for recipe in recipes %}
+
+                <div class="col-6 col-md-3 mb-2">
+                    <div class="card" style="width: auto;">
+                        <img src= "{{ recipe.imageFilename }}"  class="card-img-top" alt="{{ recipe.name }}">
+                        <div class="card-body">
+                            <h5 class="card-title"> {{ recipe.name|capitalize }}</h5>
+                            <p class="card-text"> {{ recipe.description| raw | slice(0, 98) ~ '...' }}</p>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><h6>Temps de préparation :</h6>  {{ (recipe.time is not null) ? recipe.time : 'Non renseigné' }} min</li>
+                            <li class="list-group-item"><h6>Nombre de personne:</h6>  {{ (recipe.nbPeople is not null) ? recipe.nbPeople : 'Non renseigné'}}</li>
+                            <li class="list-group-item"><h6>Difficulté:</h6>  {{ (recipe.difficulty is not null) ? recipe.difficulty  : 'Non renseigné'}}</li>
+                            <li class="list-group-item"><h6>Prix:</h6>  {{ (recipe.price is not null) ? recipe.price : 'Non renseigné'}} <i class="fa-sharp fa-solid fa-euro-sign"></i></li>
+                        </ul>
+                        <div class="card-body d-inline-flex justify-content-center">
+                            <a type="button" href="{{ path('app_update_recipe', { id: recipe.id }) }}" class="card-link btn btn-primary"><i class="fa-solid fa-pen-to-square"></i></a>
+                            <a type="button" href="{{ path('app_delete_recipe', { id: recipe.id }) }}" class="card-link btn btn-danger"><i class="fa-solid fa-trash-can"></i></a>
+                            <a type="button" href="" class="card-link btn btn-secondary"><i class="fa-solid fa-eye"></i></a>
+                        </div>
+                    </div>
+            </div>
+            {% endfor %}
+            {% else %}
+                <div class="navigation d-flex justify-content-center mt-4 bg-warning">
+                    <h4>Il n'y a pas de recette</h4>
+                </div>
+
+            {% endif %}
+        </div>
+    </div>
+    <div class="navigation d-flex justify-content-center mt-4" style="margin-bottom: 12rem;">
+        {{ knp_pagination_render(recipes) }}
+    </div>
+
+{% block javascripts %}
+    {% endblock %}
+{% endblock %}

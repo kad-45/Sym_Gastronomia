@@ -143,5 +143,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="bootswatch" level="application" />
     <orderEntry type="library" name="bootstrap" level="application" />
+    <orderEntry type="library" name="select2" level="application" />
+    <orderEntry type="library" name="df64e0ec60" level="application" />
   </component>
 </module>

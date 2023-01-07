@@ -3,11 +3,11 @@
 {% block title %}Symgastronomia - Mes ingrédients{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1>Mes Ingrédients</h1>
+    <div class="container mt-4" style="margin-bottom: 12rem;">
+        <h1>Mes Ingrédients<sup class="text-primary">{{ ingredients.getTotalItemCount }}</sup></h1>
         {% if ingredients.getTotalItemCount != 0 %}
             <div class="d-flex justify-content-end">
-                 <a href="{{ path('app_new') }}" class="btn btn-primary ">Créer un ingrédient</a>
+                 <a href="{{ path('app_new_ingredient') }}" class="btn btn-dark ">Créer un ingrédient</a>
             </div>
             {% for message in app.flashes('success') %}
                 <div class="alert alert-success mt-4">
@@ -34,12 +34,12 @@
                 {% for ingredient in ingredients %}
                 <tr class="table-primary">
                     <th scope="row">{{ ingredient.id }}</th>
-                    <td>{{ ingredient.name }}</td>
+                    <td>{{ ingredient.name|capitalize }}</td>
                     <td>{{ ingredient.price }}</td>
                     <td>{{ ingredient.createdAt|date('d/m/Y H:s:i') }}</td>
                     <td>{{ ingredient.updatedAt|date('d/m/Y H:s:i') }}</td>
-                    <th><a href="{{ path('app_update', { id: ingredient.id }) }}" class="btn btn-info">Modifier</a></th>
-                    <th><a href="{{ path('app_delete', { id: ingredient.id }) }}" class="btn btn-danger ingredient_deleted" type="button" id="myBtn" model="ingredient">Supprimer</a></th>
+                    <th><a href="{{ path('app_update_ingredient', { id: ingredient.id }) }}" class="btn btn-info"><i class="fa-solid fa-pen-to-square"></i></a></th>
+                    <th><a href="{{ path('app_delete_ingredient', { id: ingredient.id }) }}" class="btn btn-danger ingredient_deleted" type="button" id="myBtn" model="ingredient"><i class="fa-solid fa-trash-can"></i></a></th>
                 </tr>
                 {% endfor %}
             </tbody>
@@ -66,7 +66,7 @@
                     <input type="hidden" id="id_ingredient" name="ingredient_id" value="{{ ingredient.id }}">
                     <input type="hidden" id="ingredient_delete_id" name="id" value="">
                     <button type="button" class="btn btn_cancel btn-secondary"> Fermer</button>
-                    <button type="submit" class="btn btn_delete btn-danger"><a href="{{ path('app_delete', { id: ingredient.id }) }}" class="text-decoration-none text-white">Supprimer</a></button>
+                    <button type="submit" class="btn btn_delete btn-danger"><a href="{{ path('app_delete_ingredient', { id: ingredient.id }) }}" class="text-decoration-none text-white">Supprimer</a></button>
                 </div>
             </div>
         </form>

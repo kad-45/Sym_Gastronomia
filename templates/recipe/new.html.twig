@@ -1,0 +1,101 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Symgastronomia - Créer une recette{% endblock %}
+
+{% block body %}
+    <div class="container w-50 mt-4" style="margin-bottom: 12rem;">
+        <h1>Créer une recette</h1>
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+
+
+        <div class="row">
+            <div class="col">
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name) }}
+            </div>
+            <div class="form-error">
+                {{ form_errors(form.name) }}
+            </div>
+            <div class="col">
+                {{ form_label(form.nbPeople) }}
+                {{ form_widget(form.nbPeople) }}
+            </div>
+            <div class="form-error">
+                {{ form_errors(form.nbPeople) }}
+            </div>
+
+            <div class="col">
+                {{ form_label(form.difficulty) }}
+                {{ form_widget(form.difficulty) }}
+            </div>
+            <div class="form-error">
+                {{ form_errors(form.difficulty) }}
+            </div>
+            <div class="col">
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description) }}
+            </div>
+            <div class="form-error">
+                {{ form_errors(form.description) }}
+            </div>
+
+            <div class="col">
+                {{ form_label(form.price) }}
+                {{ form_widget(form.price) }}
+            </div>
+            <div class="form-error">
+                {{ form_errors(form.price) }}
+            </div>
+
+            <div class="col mt-4">
+                {{ form_label(form.isFavorite) }}
+                {{ form_widget(form.isFavorite) }}
+            </div>
+            <div class="form-error">
+                {{ form_errors(form.isFavorite) }}
+            </div>
+
+            <div class="col">
+                {{ form_label(form.time) }}
+                {{ form_widget(form.time) }}
+            </div>
+            <div class="form-error">
+                {{ form_errors(form.time) }}
+            </div>
+            <div class="col">
+                {{ form_label(form.ingredients) }}
+                {{ form_widget(form.ingredients) }}
+            </div>
+            <div class="form-error">
+                {{ form_errors(form.ingredients) }}
+            </div>
+
+            <div class="col">
+                {{ form_label(form.image) }}
+                {{ form_widget(form.image) }}
+            </div>
+            <div class="form-error">
+                {{ form_errors(form.image) }}
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-dark mt-4">Créer une recette</button>
+            </div>
+        </div>
+        {{ form_rest(form)}}
+
+    </div>
+{% endblock %}
+
+  {# <script>
+            $(document).ready(function() {
+                $('.js-select-basic-multiple').select2();
+            });
+        </script>#}  {% block javascripts %}
+
+    {% endblock %}
+
+
+
+
+
+

@@ -14,6 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 
 
+
 class IngredientController extends AbstractController
 {
     /**
@@ -45,7 +46,7 @@ class IngredientController extends AbstractController
      * @return Response
      */
 
-    #[Route('/new', name: 'app_new')]
+    #[Route('/new', name: 'app_new_ingredient')]
     public function new(Request $request,
     EntityManagerInterface $manager): Response
     {
@@ -84,7 +85,7 @@ class IngredientController extends AbstractController
      * @return Response
      */
 
-    #[Route('/update/{id}', name: 'app_update')]
+    #[Route('/update/{id}', name: 'app_update_ingredient')]
 
     public function update(Ingredient $ingredient, Request $request, EntityManagerInterface $manager): Response
     {
@@ -119,18 +120,19 @@ class IngredientController extends AbstractController
      * @return Response
      */
 
-    #[Route('/delete/{id}', name: 'app_delete')]
+    #[Route('/delete/{id}', name: 'app_delete_ingredient')]
     public function delete(EntityManagerInterface $manager,
     Ingredient $ingredient): Response
     {
 
-        $manager->remove($ingredient);
-        $manager->flush();
+            $manager->remove($ingredient);
+            $manager->flush();
 
-        $this->addFlash(
-            'success',
-            'Votre ingrédient : ' . $ingredient->getName() . ' a été supprimé avec succeés!'
-        );
+            $this->addFlash(
+                'success',
+                'Votre ingrédient : ' . $ingredient->getName() . ' a été supprimé avec succeés!'
+            );
+
         return $this->redirectToRoute('app_ingredient');
     }
 }

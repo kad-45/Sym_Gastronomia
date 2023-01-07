@@ -27,10 +27,10 @@ close.addEventListener('click', () => {
 });
 
 //Lorsque l'utilisateur click sur le boutton fermer(btn_cancel)
-const cancelBtn = document.querySelector('.btn_cancel');
-cancelBtn.addEventListener('click', () => {
-    modal.style.display = 'none';
-});
+//const cancelBtn = document.querySelector('.btn_cancel');
+//cancelBtn.addEventListener('click', () => {
+   // modal.style.display = 'none';
+//});
 
 //Lorsque l'utilisateur clique n'importe où en dehors du modal, ce dernier se ferme
 window.addEventListener('click', (event) => {
