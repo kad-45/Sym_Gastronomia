@@ -5,10 +5,11 @@
 {% block body %}
     <div class="container mt-4" style="margin-bottom: 12rem;">
         <h1>Mes Ingrédients<sup class="text-primary">{{ ingredients.getTotalItemCount }}</sup></h1>
+        <div class="d-flex justify-content-end">
+            <a href="{{ path('app_new_ingredient') }}" class="btn btn-dark ">Créer un ingrédient</a>
+        </div>
         {% if ingredients.getTotalItemCount != 0 %}
-            <div class="d-flex justify-content-end">
-                 <a href="{{ path('app_new_ingredient') }}" class="btn btn-dark ">Créer un ingrédient</a>
-            </div>
+
             {% for message in app.flashes('success') %}
                 <div class="alert alert-success mt-4">
                     {{ message }}

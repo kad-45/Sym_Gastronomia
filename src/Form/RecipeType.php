@@ -130,13 +130,13 @@ class RecipeType extends AbstractType
                    new Assert\LessThan(1441)
                 ]
             ])
-            ->add('image', FileType::class, [
+            ->add('imageFilename', FileType::class, [
                 'label' => 'Image',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ],
                 'mapped' => false,
-                'required' => false,
+                'required' => true,
                 'constraints' => [
                     new Assert\File([
                         'maxSize' => '1024k',
@@ -155,20 +155,18 @@ class RecipeType extends AbstractType
                 'required' => false,
                 'choice_label' => 'name',
                 'multiple' => true,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('i')
-                        ->orderBy('i.name', 'ASC');
-                },
-                'attr' => [
-                    'class' => 'selectpicker',
-
-
-                ],
+                    'attr' => [
+                        'class' => 'select2'
+                    ],
                     'label' => 'Ingrédients',
                     'label_attr' => [
                         'class' => 'form-label mt-4'
-                    ]
-                ])
+                    ],
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('i')
+                        ->orderBy('i.name', 'ASC');
+                            }
+                ]);
            /* ->add('submit', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn btn-dark mt-4'

@@ -74,9 +74,6 @@ class Recipe
     {
         $this->ingredients = new ArrayCollection();
         $this->createdAt = new \DateTimeImmutable();
-        $this->updatedAt = new \DateTimeImmutable();
-
-
     }
 
     #[ORM\PostPersist]

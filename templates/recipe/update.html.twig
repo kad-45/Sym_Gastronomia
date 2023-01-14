@@ -73,11 +73,11 @@
             </div>
 
             <div class="col">
-                {{ form_label(form.image) }}
-                {{ form_widget(form.image) }}
+                {{ form_label(form.imageFilename) }}
+                {{ form_widget(form.imageFilename) }}
             </div>
             <div class="form-error">
-                {{ form_errors(form.image) }}
+                {{ form_errors(form.imageFilename) }}
             </div>
         </div>
         <div class="col">
@@ -86,4 +86,12 @@
         {{ form_end(form) }}
     </div>
 
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        $(document).ready(function() {
+            $('.select2').select2();
+        });
+    </script>
 {% endblock %}

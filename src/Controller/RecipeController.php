@@ -2,19 +2,21 @@
 
 namespace App\Controller;
 
+
 use App\Entity\Recipe;
 use App\Form\RecipeType;
+use App\Repository\IngredientRepository;
 use App\Repository\RecipeRepository;
+use App\Services\UploaderServices;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
+
+
 
 class RecipeController extends AbstractController
 {
@@ -26,28 +28,32 @@ class RecipeController extends AbstractController
      */
     #[Route('/recipe', name: 'app_recipe_list')]
     public function index(RecipeRepository $recipeRepo,
+    IngredientRepository $ingredientRepo,
     PaginatorInterface $paginator,
     Request $request): Response
     {
+
         $recipes = $paginator->paginate($recipeRepo->findAll(),
         $request->query->getInt('page', 1),
             10);
+        $ingredients = $ingredientRepo->findAll();
         return $this->render('recipe/index.html.twig', [
-            'recipes' => $recipes
+            'recipes' => $recipes,
+            'ingredients' => $ingredients
         ]);
     }
 
     /**
      * @param EntityManagerInterface $manager
      * @param Request $request
-     * @param SluggerInterface $slugger
+     * @param UploaderServices $uploaderServices
      * @return Response
      */
     #[Route('/recipe/new', name: 'app_new_recipe')]
     public function new(
     EntityManagerInterface $manager,
     Request $request,
-    SluggerInterface $slugger): Response
+    UploaderServices $uploaderServices): Response
     {
         $recipe = new Recipe();
         $form =$this->createForm(RecipeType::class, $recipe);
@@ -58,29 +64,16 @@ class RecipeController extends AbstractController
 
             /** @var UploadedFile $imageFile */
 
-            $imageFile = $form->get('image')->getData();
+            $imageFile = $form->get('imageFilename')->getData();
 
             // this condition is needed because the 'image' field is not required
             // so the PDF file must be processed only when a file is uploaded
             if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                // this is needed to safely include the file name as part of the URL
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
 
-                // Move the file to the directory where brochures are stored
-                try {
-                    $imageFile->move(
-                        $this->getParameter('images_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    // ... handle exception if something happens during file upload
-                }
-
+                $directory = $this->getParameter('images_directory');
                 // updates the 'brochureFilename' property to store the PDF file name
                 // instead of its contents
-                $recipe->setImageFilename($newFilename);
+                $recipe->setImageFilename($uploaderServices->uploadFile($imageFile, $directory));
             }
 
             // ... persist the $recipe variable or any other work
@@ -101,22 +94,47 @@ class RecipeController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Recipe $recipe
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @param UploaderServices $uploaderServices
+     * @return Response
+     */
     #[Route('/recipe/update/{id}', name: 'app_update_recipe')]
-    public function update(Recipe $recipe, Request $request, EntityManagerInterface $manager): Response
+    public function update(Recipe $recipe,
+    Request $request,
+    EntityManagerInterface $manager,
+     UploaderServices $uploaderServices): Response
     {
+
+        $imageFilename = $recipe->getImageFilename();
+        //on hydrate le champ du form avec le nom du fichier image
+        if(!is_null($imageFilename)){
+
+            $recipe->setImageFilename($imageFilename);
+        }
         $form = $this->createForm(RecipeType::class, $recipe);
+
         $form->handleRequest($request);
+        $recipe = $form->getData();
+
+        $imageFile = $form['imageFilename']->getData();
+        $directory = $this->getParameter('images_directory');
+
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $recipe = $form->getData();
+            if ( $recipe->getImageFilename() !== null){
+                $recipe->setImageFilename(
+                    $uploaderServices->uploadFile($imageFile, $directory));
+            }
 
             $manager->persist($recipe);
-
             $manager->flush();
 
             $this->addFlash(
                 'success',
-                'Votre ingrédient : ' . $recipe->getName() . ' a été mis à jour avec succeés!'
+                'Votre recette : ' . $recipe->getName() . ' a été mis à jour avec succeés!'
             );
 
             return $this->redirectToRoute('app_recipe_list');
@@ -126,9 +144,15 @@ class RecipeController extends AbstractController
         ]);
     }
 
+    /**
+     * @param EntityManagerInterface $manager
+     * @param Recipe $recipe
+     * @return Response
+     */
     #[Route('/recipe/delete/{id}', name: 'app_delete_recipe')]
-    public function delete(EntityManagerInterface $manager,
-                           Recipe $recipe): Response
+    public function delete(
+    EntityManagerInterface $manager,
+    Recipe $recipe): Response
     {
 
         $manager->remove($recipe);

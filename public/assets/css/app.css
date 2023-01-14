@@ -1,8 +1,4 @@
-body {
-    background-color: #0dcaf0;
-    display: flex;
-    flex-direction: column;
-}
+
 /*-----Le modal pour supprimer les ingrédients------*/
 
 .modal_ingredient_delete {
@@ -29,4 +25,8 @@ body {
 .container_modal_delete > h2 {
     margin-top: 2rem;
 }
+
+/*-------Page Login-----*/
+
+
 
