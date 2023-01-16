@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des utilisateurs{% endblock %}
+
+{% block body %}
+    <div class="row">
+        {% for user in users %}
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Nom/Prenom: {{ user.fullname}}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Pseudo : {{ user.pseudo}}</h6>
+                    <a href="" class="card-link"><i class="fa-solid fa-eye"></i></a>
+                        <a href="" class="card-link"><i class="fa-solid fa-trash-can"></i></a>
+                        <a href="{{ path('app_user_update', { id: user.id }) }}" class="card-link"><i class="fa-solid fa-pen-to-square"></i></a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% if isPaginated is defined and isPaginated %}
+        <div class="row mt-3">
+            <nav aria-label="col Page navigation example">
+                <ul class="pagination">
+                    {% if page != 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_users_list', { page:page - 1, nbr: nbr })}}">Previous</a>
+                        </li>
+                    {% endif %}
+                    {% for i in range(1, nbrPage) %}
+                        <li class="page-item"><a class="page-link" href="{{ path('app_users_list', { page:i, nbr: nbr })}}">{{ i }}</a></li>
+                    {% endfor %}
+                    {% if page != nbrPage %}
+                        <li class="page-item">
+                            <a class="page-link" href="{{ path('app_users_list', { page:page + 1, nbr: nbr })}}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    {% endif %}
+{% endblock %}

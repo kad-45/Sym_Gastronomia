@@ -5,22 +5,56 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Form\UserPasswordType;
 use App\Form\UserType;
+use App\Services\Helpers;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Doctrine\Persistence\ManagerRegistry;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 class UserController extends AbstractController
 {
+    private LoggerInterface $logger;
+    private EventDispatcherInterface $dispatcher;
+    private Helpers $helpers;
+    public function __construct(
+        LoggerInterface $logger,
+        EventDispatcherInterface $dispatcher,
+        Helpers $helpers)
+    {
+
+    }
+
+    #[Route('/user', name: 'app_users_list')]
+    public function index(ManagerRegistry $doctrine): Response
+    {
+        //dd($this->getUser()->getRoles());
+        if ($this->getUser()->getRoles()[0] != 'ROLE_ADMIN') {
+
+            return $this->redirectToRoute('app_recipe_list');
+        }
+
+        $repository = $doctrine->getRepository(User::class);
+        $users = $repository->findAll();
+
+
+        return $this->render('user/users_list.html.twig', [
+            'users' => $users
+        ]);
+    }
     /**
      * @param User $user
      * @param Request $request
      * @param EntityManagerInterface $manager
      * @return Response
      */
-    #[Route('/user/update/{id}', name: 'app_user_update')]
+    #[Route('/user/update/{id<\d+>?0}', name: 'app_user_update')]
     public function update(
         User                        $user,
         Request                     $request,
@@ -30,7 +64,8 @@ class UserController extends AbstractController
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
-        if ($this->getUser() !== $user) {
+
+        if ($this->getUser() !== $user && $this->getUser()->getRoles()[0] != 'ROLE_ADMIN') {
             return $this->redirectToRoute('app_recipe_list');
         }
         $form = $this->createForm(UserType::class, $user);
@@ -58,19 +93,34 @@ class UserController extends AbstractController
         ]);
     }
 
+    /**
+     * @param User $user
+     * @param Request $request
+     * @param UserPasswordHasherInterface $hasher
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route('/user/edit_password/{id}', name: 'app_edit_password')]
     public function editPassword(User $user,
     Request $request,
     UserPasswordHasherInterface $hasher,
     EntityManagerInterface $manager): Response
     {
+        if (!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+        if ($this->getUser() !== $user) {
+            return $this->redirectToRoute('app_recipe_list');
+        }
         $form = $this->createForm(UserPasswordType::class);
         $form->handleRequest($request);
-        //dd($form->getData()['plainPassword']);
+
         if ($form->isSubmitted() && $form->isValid()) {
+
             if ($hasher->isPasswordValid($user, $form->getData()['plainPassword'])) {
 
-                $user->setPassword($hasher->hashPassword($user, $form->getData()['newPlainPassword']));
+                $user = setUpdatedAt(new \DateTimeImmutable());
+                $user->setPlainPassword($hasher->hashPassword($user, $form->getData()['newPlainPassword']));
 
                 $manager->persist($user);
                 $manager->flush();

@@ -19,6 +19,12 @@
                     <a class="nav-link active" href="{{ path('app_recipe_list') }}">Recettes
                     </a>
                 </li>
+                {% if is_granted('ROLE_ADMIN') %}
+                <li class="nav-item">
+                    <a class="nav-link active" href="{{ path('app_users_list') }}">Liste utilisateurs
+                    </a>
+                </li>
+                {% endif %}
             </ul>
 
         </div>
@@ -28,10 +34,10 @@
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
-                    <li><a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a></li>
+                    <li><a class="dropdown-item" href="{{ path('app_logout') }}">Déconnexion</a></li>
                 {% else %}
-                    <li><a class="dropdown-item" href="{{ path('app_login') }}">Login</a></li>
-                    <li><a class="dropdown-item" href="{{ path('app_register') }}">Register</a></li>
+                    <li><a class="dropdown-item" href="{{ path('app_login') }}">Connexion</a></li>
+                    <li><a class="dropdown-item" href="{{ path('app_register') }}">Inscription</a></li>
                 {% endif %}
             </ul>
         </li>

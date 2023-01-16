@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
-
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +13,10 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
+    /**
+     * @param AuthenticationUtils $authenticationUtils
+     * @return Response
+     */
     #[Route('/login', name: 'app_login')]
     public function index(AuthenticationUtils $authenticationUtils): Response
     {
@@ -27,12 +30,21 @@ class SecurityController extends AbstractController
         ]);
     }
 
+    /**
+     * @return Response
+     */
+
     #[Route('/logout', name: 'app_logout', methods: ['GET'])]
     public function logout(): Response
     {
         return $this->redirectToRoute('app_home');
     }
 
+    /**
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route('/register', name: 'app_register')]
     public function registration(Request $request, EntityManagerInterface $manager): Response
     {

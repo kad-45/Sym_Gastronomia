@@ -13,7 +13,11 @@
     {% endif %}
     <div class="container w-50 mt-4">
             <form action="{{ path('app_login') }}" method="POST">
-
+                {% if app.user %}
+                    <div class="mb-3">
+                        You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                    </div>
+                {% endif %}
                 <div class="form-outline mb-4">
                     <label class="form-label mt-4" for="username">Adresse mail</label>
                     <input type="email" id="username" name="_username" class="form-control" placeholder="exemple@exemple.fr" value="{{ lastUsername }}"/>
@@ -21,6 +25,7 @@
                 <div class="form-outline mb-4">
                     <label  for="password" class="form-label mt-4">Password</label>
                     <input type="password" class="form-control" id="password" name="_password" placeholder="password"/>
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
                 </div>
                 <div class="row mb-4">
                     <div class="col d-flex justify-content-center">

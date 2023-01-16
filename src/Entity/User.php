@@ -20,7 +20,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(type:'string', length: 50)]
+    #[ORM\Column(type: 'string', length: 50)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 6, max: 50,
         minMessage: "Votre nom complet doit avoir au minimum 6 caractères",
@@ -31,7 +31,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(min: 3, max: 50)]
     private ?string $pseudo = null;
 
-    #[ORM\Column(type:'string', length: 180, unique: true)]
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
     #[Assert\Email]
     #[Assert\Length(min: 10, max: 180)]
     private ?string $email = null;
@@ -41,26 +41,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private array $roles = [];
 
 
-
     private ?string $plainPassword = null;
+
 
     /**
      * @var string|null
      */
-    #[ORM\Column(type:'string')]
+    #[ORM\Column(type: 'string')]
     private ?string $password = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
     #[Assert\NotNull]
     private ?\DateTimeImmutable $createdAt = null;
 
-    #[ORM\Column(type: 'boolean')]
-    private ?bool $isVerified = false;
+    #[ORM\Column(type: 'datetime_immutable',  nullable: true)]
+    #[Assert\NotNull]
+    private ?\DateTimeImmutable $updatedAt = null;
+
 
     public function __construct()
     {
 
         $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -87,7 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -184,15 +187,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function isVerified(): bool
+    /**
+     * @return \DateTimeImmutable|null
+     */
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        return $this->isVerified;
+        return $this->updatedAt;
     }
 
-    public function setIsVerified(bool $isVerified): self
+    /**
+     * @param \DateTimeImmutable|null $updatedAt
+     */
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): void
     {
-        $this->isVerified = $isVerified;
-
-        return $this;
+        $this->updatedAt = $updatedAt;
     }
+
 }
